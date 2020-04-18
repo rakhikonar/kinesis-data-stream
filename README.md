@@ -1,5 +1,5 @@
 # Big data project on best buy data
-![](kinesis-data-stream/pipeline.PNG)
+![](images/pipeline.PNG)
 ## The motivation of this work:
 
 With increasing data volume in each industry provides never-ending challenges in bigdata domain. There are traditional ways and modern ways of handling big data. In today’s competitive & complex business world the various aspects of business Change in one aspect has direct or indirect effect on another aspect.This complexity of data makes it difficult for any business to rely solely on experience (or intuition) to make decisions. We need to rely on data - structured,unstructured or semi-structured - to make any business decision. There are many technologies and tools like SAS, R, and Matlab to analyse data before making any decision. I wanted incorporate tranditional ETL(Extract, transform and load) process using AWS component, Hadoop, Nosql and Apache Spark as I think it provides more complete view for insight into the data with ease and it is easy to capture, store, manage and analyze. My motivation for this work is to get more knowledge on the data with a traditional process of handling big data with aws touch.
