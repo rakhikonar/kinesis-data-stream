@@ -1,9 +1,9 @@
-
-# The motivation of this work:
+#Big data project on best buy data
+## The motivation of this work:
 
 With increasing data volume in each industry provides never-ending challenges in bigdata domain. There are traditional ways and modern ways of handling big data. In today’s competitive & complex business world the various aspects of business Change in one aspect has direct or indirect effect on another aspect.This complexity of data makes it difficult for any business to rely solely on experience (or intuition) to make decisions. We need to rely on data - structured,unstructured or semi-structured - to make any business decision. There are many technologies and tools like SAS, R, and Matlab to analyse data before making any decision. I wanted incorporate tranditional ETL(Extract, transform and load) process using AWS component, Hadoop, Nosql and Apache Spark as I think it provides more complete view for insight into the data with ease and it is easy to capture, store, manage and analyze. My motivation for this work is to get more knowledge on the data with a traditional process of handling big data with aws touch.
 
-# The problem to address:
+## The problem to address:
 
 Nowadays, parts of bigdata are stored and processed in cloud and parts – on-premises, which can also be cost-effective.My goal is to resorting big data to data lakes and querying and analyzing one part at a time using Optimized algorithms or programs and combine the whole data to get the final details of the analysis.I tried to process data in a cost effective way without compromising the data quality. Also tried to address the problem of upscaling using this project. The pipeline included in this project gives no complexity of scaling up so the system’s performance doesn’t decline and stay within budget.
 
