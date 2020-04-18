@@ -1,29 +1,40 @@
-# kinesis-data-stream
-kinesis data stream
 
 import requests
 import boto3
 import json
-import botocore
-from pymongo import MongoClient
-import requests
-import json
-import pandas as pd
+import boto3
 
+session = boto3.Session()
+client = session.client('firehose',region_name='us-east-1')
+DeliveryStreamName = "data_delivery"
 
+celphones = "https://api.bestbuy.com/v1/products((categoryPath.id=pcmcat209400050001))?apiKey=qn3q3zdqzs223x2njxfv6jzx&pageSize=100&format=json"
 
-AWSACCESSKEY="A***************"
-AWSSECRETKEY="*******************"
-AWSTOKEN="FwoGZXIvYXdzEEQaDH6nKPMu+l9tUgBk4SLDAezzp9Oc+p9TqHL1BEg9z3YbC0iR/0lrAbSap36GnHSUvDbwLTNAhT0COZmqAlNLAA8eXr5YePe3rxTXl5ZUtFytpslyHxy+JBRleCvh/4H9uqGrto+/bV2nQ/7TplDCEXpLY41Ws11yf84pgi3rfQfAZaZlN5axMRtaqqZ9PZM0s5P8y0u3xrfHotqqmztCu2QPQXCBLliGPW0f6QLW1M5Kz9h2QgWdF0/hMeCK7SsB3qGM+dkHGLfNVgYrco5vV5PTkyiau830BTIt6938ly6DHoAScjvMc21pNBI8LWhKMsbfav7mI+O6rXjTN+I2XEjtYaBVGgb8"
+BestBuydData = requests.get(celphones)
+celphone_data = BestBuydData.json()
+celphone = json.dumps(celphone_data,sort_keys=True, indent=4)
 
-session = boto3.Session(profile_name='default')
+records = []
+count = 1
+for row in celphone_data:
+        if count % 500 == 0:
 
-# Taking the json file from s3 bucket
-
-s3 = boto3.client("s3",aws_access_key_id=AWSACCESSKEY, aws_secret_access_key=AWSSECRETKEY, aws_session_token=AWSTOKEN, region_name='us-east-1')
-#bucket = s3.Bucket('aws.project')
-object = s3.get_object(Bucket='aws.storage.project',Key='bestbuy.json')
-serializedObject = object['Body'].read().decode('utf-8')
-file_data = json.loads(serializedObject)
-#print(file_data)
-
+            response  = client.put_record_batch(
+                     DeliveryStreamName=DeliveryStreamName,
+                     Records= records
+            )
+            print(response)
+            print(len(records))
+            records.clear()
+        record = {
+                   "Data": json.dumps(row)
+        }
+        records.append(record)
+        count = count + 1
+if len(records) > 0:
+     print(len(records))
+     response = client.put_record_batch(
+            DeliveryStreamName=DeliveryStreamName,
+            Records= records
+           )
+     print(response)
