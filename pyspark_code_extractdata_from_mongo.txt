@@ -1,0 +1,75 @@
+from pymongo import MongoClient
+import requests
+import json
+import pandas as pd
+from pyspark import SparkContent,SparkConf
+from pyspark.sql import SQLContext
+from pyspark.sql import SparkSession
+
+#Mongodb
+==================================================================================================================================
+***spark schema of mongo *****
+
+my_spark = SparkSession \
+    .builder \
+    .appName("myApp") \
+    .config("spark.mongodb.input.uri", "mongodb://127.0.0.1/bestbuy_data_db.collection_products") \
+    .config("spark.mongodb.input.uri", "mongodb://127.0.0.1/bestbuy_data_db.collection_products") \
+    .getOrCreate()
+
+
+# Storing mongodata into dataframe
+
+df = spark.read.format("mongo").option("uri",
+"mongodb://127.0.0.1/bestbuy_data_db.collection_products").load()
+
+# showing schema
+
+df.printSchema()
+
+## Using map
+
+product = df.select('name')
+rdd=product.rdd
+rdd.map(lambda x:(x,1)).take(5)
+
+## Using flatmap
+
+rdd1 = product.rdd.flatMap(list)
+rdd1.take(5)
+
+
+
+## Using SQLContext with temp table view
+
+DF = spark.read.format("com.mongodb.spark.sql.DefaultSource").option("database", "bestbuy_data_db").option("collection", "collection_products").load() 
+df.registerTempTable("best_buy")  
+product = sqlContext.sql("SELECT * FROM best_buy")
+product.show()
+
+
+## Using SQLContext
+DF = spark.read.format("com.mongodb.spark.sql.DefaultSource").option("database", "bestbuy_data_db").option("collection", "best_buy").load() 
+df.registerTempTable("best_buy")  
+celphones = sqlContext.sql("SELECT sku, salePrice FROM best_buy")
+celphones.show()
+
+## Using subset 
+
+
+my_spark = SparkSession \
+    .builder \
+    .appName("myApp") \
+    .config("spark.mongodb.input.uri", "mongodb://127.0.0.1/bestbuy_data_db.best_buy") \
+    .config("spark.mongodb.input.uri", "mongodb://127.0.0.1/bestbuy_data_db.best_buy") \
+    .getOrCreate()
+    .load()subset = df[(df['products'] == value)] 
+
+
+
+## Using mapping
+
+ import com.mongodb.spark.config._
+
+val readConfig = ReadConfig(Map("collection" -> "best_buy", "readPreference.name" -> "secondaryPreferred"), Some(ReadConfig(sc)))
+val customRdd = MongoSpark.load(sc, readConfig)
