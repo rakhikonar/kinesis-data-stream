@@ -1,4 +1,4 @@
-# Big data project on best buy data
+# Big data project on BestBuy data
 ![](pipeline.PNG)
 ## The motivation of this work:
 
