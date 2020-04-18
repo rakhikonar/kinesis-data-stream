@@ -1,0 +1,109 @@
+## Scala code
+
+package com.apachespark
+import com.mongodb.spark.config.{ReadConfig, _}
+import com.mongodb.spark.sql._
+import org.apache.spark.sql.SparkSession
+
+object sparkapplication {
+  def main(args: Array[String]): Unit = {
+    val spark = SparkSession.builder()
+      .master("local")
+      .appName("MongoSparkConnector")
+      .config("spark.mongodb.input.uri", "mongodb://127.0.0.1/bestbuy_data_db.collection_products")
+      .config("spark.mongodb.input.uri", "mongodb://127.0.0.1/bestbuy_data_db.collection_products")
+      .getOrCreate()
+
+
+    // Read the best_buy data from MongoDB to a DataFrame
+
+    val readConfg = ReadConfig(Map("uri" -> "mongodb://127.0.0.1/", "database" -> "bestbuy_data_db",
+      "collection" -> "best_buy")) // 1)
+    val Df = spark.read.mongo(readConfg) // 2)
+    Df.show()
+    Df.schema.printTreeString()
+
+    // Read the products data from MongoDB to a DataFrame
+    val readCong = ReadConfig(Map("uri" -> "mongodb://127.0.0.1/", "database" -> "bestbuy_data_db",
+      "collection" -> "collection_products")) // 1)
+    val Dataframe = spark.read.mongo(readCong) // 2)
+    Dataframe.show()
+    Dataframe.schema.printTreeString()
+
+
+
+  }
+
+
+}
+
+
+## Products collection code in scala
+
+package com.apache.spark
+
+import com.mongodb.spark.config.ReadConfig
+import com.mongodb.spark.sql._
+import org.apache.spark.sql.SparkSession
+import com.mongodb.spark.config.{ReadConfig, _}
+
+
+object program1 {
+
+
+
+  def main(args: Array[String]): Unit = {
+
+    val spark = SparkSession.builder()
+      .master("local")
+      .appName("MongoSparkConnector")
+      .config("spark.mongodb.input.uri", "mongodb://127.0.0.1/bestbuy_data_db.collection_products")
+      .config("spark.mongodb.input.uri", "mongodb://127.0.0.1/bestbuy_data_db.collection_products")
+      .getOrCreate()
+
+    // Read the data from MongoDB to a DataFrame
+    val readConfig = ReadConfig(Map("uri" -> "mongodb://127.0.0.1/", "database" -> "bestbuy_data_db", "collection" -> "collection_products")) // 1)
+    val Data = spark.read.mongo(readConfig)
+    Data.show()
+    Data.printSchema()
+
+
+
+    //Sparksql for reading details about products
+   // val conf = new SparkConf()
+   // conf.setMaster("local")
+    //conf.setAppName("Application")
+    //val sc = new SparkContext(conf)
+   // val sqlContext = new SQLContext(sc)
+
+    Data.createOrReplaceTempView("product")
+    val sqlDF = spark.sql("SELECT * FROM product")
+    sqlDF.show()
+
+    //filter
+
+    sqlDF.filter(sqlDF("customerReviewAverage") > 4).show()
+
+    //aggregation
+
+    val data3 = spark.sql("SELECT count(regularPrice) from product where regularPrice > 300")
+    data3.show()
+
+
+    //maximum price of products
+    val data1 = spark.sql("SELECT MAX(regularPrice) from product")
+    data1.show()
+
+    // No pre-defined encoders for Dataset define explicitly
+    //Mapping
+    implicit val mapEncoder = org.apache.spark.sql.Encoders.kryo[Map[String, Any]]
+
+    Data.map( phones  => phones.getValuesMap[Any](List("name", "regularPrice"))).collect()
+
+    val data2 = spark.sql("SELECT name, regularPrice from product")
+    data2.show()
+
+
+  }
+
+}
